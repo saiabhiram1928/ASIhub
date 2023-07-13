@@ -1,0 +1,27 @@
+{% extends 'index.html' %}
+
+{% block content %}
+<style>
+    .profile-container {
+        display: grid;
+        grid-template-columns: 1fr 3fr 1fr ;
+    }
+</style>
+    <h1> {{user.username}} </h1>
+
+    <div class="profile-container">
+        <div>
+            <h3><a href="{% url 'profile' user.id %}">All</a></h3>
+{% for topic in topics %}
+<h3><a href="{% url 'profile' user.id %}?q={{topic.name}}"> {{topic.name}} </a></h3>
+{% endfor %}
+        </div>
+        <div>
+            {% include 'base/feed_comp.html' %}
+        </div>
+        <div>
+            {% include 'base/activity_comp.html' %}
+        </div>
+    </div>
+{% endblock content %}
+    

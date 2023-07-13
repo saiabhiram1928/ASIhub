@@ -1,0 +1,65 @@
+{% extends 'index.html' %}
+
+
+{% block content %}
+<style>
+    .room-container{
+        display: grid;
+        grid-template-columns: 3fr 1fr;
+    }
+</style>
+<div class="room-container">
+    <div>
+        {% if  user_is_participant == 0 and room.host != request.user  %}
+        <h1><a href="{% url 'join_room' room.id %}">Join</a></h1>
+        {% endif %}
+                
+        <div>   
+            <h1>welcome to the room : {{room.name}}</h1>
+            <h2> Hosted By {{room.host.username}} </h2>
+            <p>{{room.description}}</p>
+            <p> {{room.topic.name}} </p>
+            <br>
+        </div>
+      
+        <div>
+            {% for room_message in room_messages %}
+            
+            {% if request.user == room_message.user or room_message.room.host.username == request.user.username %}
+            <h2><a href="{% url 'delete_msg' room_message.id %}">delete</a></h2>
+            {% endif %}
+            <h3> @{{room_message.user.username}} {{room_message.created | timesince}} </h3>
+            <p> {{room_message.text}} </p>
+            <hr>
+        {% endfor %}
+        </div>
+        
+        {% if request.user.is_authenticated and user_is_participant == 1  %}
+        <div>
+            <form action="" method="POST">
+                {% csrf_token %}
+                <input type="search" name="message" id="message">
+                <input type="submit" value="send">
+            </form>
+        </div>
+        {% endif %}
+            
+        
+    </div>
+       <div>
+        <h1>participants</h1>
+        <hr>
+        
+        {% for participant in participants %}
+        <h3> <a href="{% url 'profile' participant.id %}">@{{participant}}</a>  </h3>            
+        {% endfor %}
+            
+       </div>
+</div>
+
+
+   
+        
+        
+{% endblock content %}
+    
