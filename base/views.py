@@ -145,12 +145,15 @@ def profile(request , pk):
     count = user.room_set.all().count()
     show_profile_link =False
     topics = Topic.objects.all()
+    paginator = Paginator(rooms, 5)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     profile = Profile.objects.get(user = request.user)
     topics_count={}
     for topic in topics:
         topics_count[topic] = Room.objects.filter(Q(host= request.user) & Q(topic =topic )).count()
     msgs = user.messages_set.all().order_by('-created')[0:5]
-    return render(request, 'base/profile.html' , {'user':user , 'rooms' : rooms , 'show_profile_link' : show_profile_link , 'msgs' : msgs ,'count':count , 'topics_count' :topics_count , 'profile' : profile})
+    return render(request, 'base/profile.html' , {'user':user , 'rooms' : rooms , 'show_profile_link' : show_profile_link , 'msgs' : msgs ,'count':count , 'topics_count' :topics_count , 'profile' : profile ,'page_obj': page_obj })
 def go_back(request):
     previous_page = request.META.get('HTTP_REFERER')
     print(previous_page)
